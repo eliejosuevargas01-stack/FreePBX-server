@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala todas as dependências (necessário para a compilação do TypeScript/Vite)
-RUN npm ci
+RUN npm install
 
 # Copia o restante do código fonte
 COPY . .
@@ -31,7 +31,7 @@ ENV PORT=3000
 
 # Copia apenas os manifestos de pacotes para instalar dependências de produção
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 # Copia os arquivos compilados do estágio anterior
 COPY --from=builder /app/dist ./dist
