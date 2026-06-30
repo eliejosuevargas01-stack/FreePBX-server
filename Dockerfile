@@ -15,6 +15,9 @@ RUN npm install
 # Copia todo o restante do código fonte
 COPY . .
 
+# Diagnóstico de arquivos para verificação
+RUN ls -la
+
 # Variáveis de ambiente padrão para a build e execução
 ENV NODE_ENV=production
 ENV PORT=3000
