@@ -1,0 +1,6 @@
+{
+  "name": "Asterisk & FreePBX VoIP Server Simulator",
+  "description": "Configure ramais SIP e troncos VoIP reais, teste rotas e gere um script bash automatizado (install_asterisk.sh) para instalar e configurar instantaneamente seu servidor Asterisk físico ou VPS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

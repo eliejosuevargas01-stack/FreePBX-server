@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  asterisk-voip-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: asterisk-voip-manager
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    # Caso queira usar um proxy reverso externo, configure as labels do Traefik/Coolify correspondentes
