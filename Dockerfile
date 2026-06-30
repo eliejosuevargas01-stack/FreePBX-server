@@ -2,42 +2,32 @@
 # DOCKERFILE PARA DEPLOY DE PRODUÇÃO NO COOLIFY
 # =========================================================
 
-# Estágio 1: Build da aplicação (Compilação)
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 WORKDIR /app
 
-# Copia manifestos de pacotes
-COPY package*.json ./
+# Copia apenas os manifestos de pacotes primeiro para aproveitar o cache de camadas do Docker
+COPY package.json ./
+COPY package-lock.json* ./
 
-# Instala todas as dependências (necessário para a compilação do TypeScript/Vite)
+# Instala todas as dependências necessárias para compilação e execução
 RUN npm install
 
-# Copia o restante do código fonte
+# Copia todo o restante do código fonte
 COPY . .
 
-# Variável de ambiente para otimização de build
-ENV NODE_ENV=production
-
-# Executa o build (gera as páginas estáticas no dist/ e o servidor em dist/server.cjs)
-RUN npm run build
-
-# Estágio 2: Executor de Produção (Runner ultra-leve)
-FROM node:20-alpine AS runner
-WORKDIR /app
-
-# Variável de ambiente padrão para produção
+# Variáveis de ambiente padrão para a build e execução
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copia apenas os manifestos de pacotes para instalar dependências de produção
-COPY package*.json ./
-RUN npm install --omit=dev
+# Executa a compilação (gera a pasta dist/ com o cliente React e dist/server.cjs)
+RUN npm run build
 
-# Copia os arquivos compilados do estágio anterior
-COPY --from=builder /app/dist ./dist
+# Remove dependências de desenvolvimento para manter a imagem leve
+RUN npm prune --production
 
-# Expõe a porta de escuta da aplicação
+# Expõe a porta de rede da aplicação
 EXPOSE 3000
 
-# Comando padrão de inicialização
+# Comando para iniciar o servidor
 CMD ["node", "dist/server.cjs"]
+
